@@ -56,7 +56,7 @@
     <div class="file-input">
       <label>
         Select WAV files to convert:
-        <input type="file" accept="audio/wav" />
+        <input type="file" accept="audio/wav" multiple />
       </label>
     </div>
     <ul class="file-list"></ul>
@@ -76,34 +76,43 @@
 
     const input = document.querySelector('input[type="file"]');
     input.addEventListener('change', async (e) => {
-      const filename = input.files[0].name;
-      const arrayBuffer = await input.files[0].arrayBuffer();
+
+      const newFiles = await Promise.all(Array.from(input.files).map(convertFile));
+
+      console.log(newFiles)
+
+      state.files = [...state.files, ...newFiles];
+
+      updateDOM(state);
+
+      input.value = null;
+
+    });
+
+    async function convertFile(file) {
+      const filename = file.name;
+      const arrayBuffer = await file.arrayBuffer();
 
       const fileByteArray = [];
       const buffer = new Uint8Array(arrayBuffer);
 
       try {
         const pda = wavToPda.wavToPda(buffer);
-        const output = {
+        return {
           url: URL.createObjectURL(new Blob([pda])),
           name: filename,
           outputName: filename.replace('.wav', '.pda'),
           timestamp: Date.now()
         }
-        state.files.push(output);
       } catch (error) {
-        state.files.push({
+        return {
           name: filename,
           errorMessage: error.message,
           timestamp: Date.now()
-        })
+        }
       }
 
-      input.value = null;
-
-      updateDOM(state);
-
-    });
+    }
 
 
     function updateDOM(state) {
