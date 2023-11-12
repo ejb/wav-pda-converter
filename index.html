@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>WAV to PDA Converter</title>
+</head>
+
+<body>
+
+  <header>
+    <h1>WAV to PDA Converter</h1>
+  </header>
+  <main>
+    <input type="file" accept="audio/wav">
+    <div class="output"></div>
+  </main>
+
+  <script src="//bundle.run/buffer@6.0.3"></script>
+  <script>
+    // Browsers don't have the Buffer API, so we have to polyfill it.
+    window.Buffer = window.buffer.Buffer;
+  </script>
+
+  <script src="./dist/wav-to-pda.js"></script>
+
+  <script>
+    const input = document.querySelector('input[type="file"]');
+    input.addEventListener('change', async (e) => {
+      const filename = input.files[0].name;
+      const arrayBuffer = await input.files[0].arrayBuffer();
+
+      const fileByteArray = [];
+      const buffer = new Uint8Array(arrayBuffer);
+
+      const pda = wavToPda.wavToPda(buffer);
+
+
+      const output = {
+        url: URL.createObjectURL(new Blob([pda])),
+        name: filename.replace('.wav', '.pda')
+      }
+
+      document.querySelector('.output').innerHTML = `<a href="${output.url}" download="${output.name}">Download ${output.name}</a>`;
+
+    });
+  </script>
+</body>
+
+</html>
