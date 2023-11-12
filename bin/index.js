@@ -1,19 +1,21 @@
-import fs from "node:fs/promises";
-
-const { wavToPda } = "../dist/wav-to-pda.js";
+const { readFile, writeFile } = require("node:fs/promises");
+const { wavToPda } = require("../dist/wav-to-pda.js");
 
 main();
 
 async function main() {
   const [input, output] = process.argv.slice(2);
 
-  const wavFile = await fs.readFile(input);
-
-  if (wavFile.audioFormat === "ADPCM") {
-    throw new Error("ADPCM-encoded WAV files are not yet supported, sorry");
+  if (!input) {
+    console.error("No input file specified");
   }
+  if (!output) {
+    console.error("No output file specified");
+  }
+
+  const wavFile = await readFile(input);
 
   const pdaFile = wavToPda(wavFile);
 
-  await fs.writeFile(output, pdaFile);
+  await writeFile(output, pdaFile);
 }

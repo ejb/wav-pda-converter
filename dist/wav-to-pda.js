@@ -6089,6 +6089,12 @@
   function wavToPda(wav) {
     const wavData = parseWav(wav);
 
+    console.log(wavData.audioFormat);
+
+    if (wavData.audioFormat === "ADPCM") {
+      throw new Error("ADPCM-encoded WAV files are not yet supported, sorry");
+    }
+
     const newPdaData = pdaDataToBinary({
       fileType: "Playdate AUD",
       sampleRate: wavData.sampleRate,

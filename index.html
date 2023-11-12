@@ -33,15 +33,24 @@
       const fileByteArray = [];
       const buffer = new Uint8Array(arrayBuffer);
 
-      const pda = wavToPda.wavToPda(buffer);
-
-
-      const output = {
-        url: URL.createObjectURL(new Blob([pda])),
-        name: filename.replace('.wav', '.pda')
+      let pda;
+      try {
+        pda = wavToPda.wavToPda(buffer);
+      } catch (error) {
+        alert(error.message)
       }
 
-      document.querySelector('.output').innerHTML = `<a href="${output.url}" download="${output.name}">Download ${output.name}</a>`;
+      if (pda) {
+        const output = {
+          url: URL.createObjectURL(new Blob([pda])),
+          name: filename.replace('.wav', '.pda')
+        }
+        document.querySelector('.output').innerHTML = `<a href="${output.url}" download="${output.name}">Download ${output.name}</a>`;
+      } else {
+        document.querySelector('.output').innerHTML = '';
+      }
+
+      input.value = null;
 
     });
   </script>
