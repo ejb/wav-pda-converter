@@ -8,6 +8,13 @@ Converting WAV files to PDA (Playdate Audio) for use with the [Playdate games co
 node bin/index.js input_file.wav output_file.pda
 ```
 
+## Building the web app
+
+```sh
+npm ci
+npm run dev
+```
+
 ## Made possible by...
 
 - Scratchminer on the Playdate Squad discord

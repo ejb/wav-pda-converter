@@ -1,5 +1,4 @@
-import wavefile from "wavefile";
-const { WaveFile } = wavefile;
+import { WaveFile } from "wavefile";
 
 import * as r from "restructure";
 

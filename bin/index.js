@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 
-import { wavToPda } from "../src/wav-to-pda.js";
+const { wavToPda } = "../dist/wav-to-pda.js";
 
 main();
 

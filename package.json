@@ -4,13 +4,20 @@
   "description": "Converting between WAV and Playdate Audio files",
   "main": "wav-to-pda.js",
   "scripts": {
+    "dev": "rollup -c rollup.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "pawprints aka @ejb",
   "license": "ISC",
   "dependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "restructure": "^3.0.0",
+    "rollup": "^4.4.0",
     "wavefile": "^11.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "rollup-plugin-serve": "^2.0.2"
+  }
 }
