@@ -6,14 +6,60 @@
   <title>WAV to PDA Converter</title>
 </head>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+
+<style>
+  .file-input {
+    background: var(--background);
+    border-radius: 6px;
+    padding: 10px;
+    max-width: 400px;
+    margin: 0 auto 20px;
+    text-align: center;
+  }
+
+  .file-list {
+    padding: 0;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .file-bubble {
+    list-style: none;
+    border-radius: 6px;
+    background: var(--background);
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .input-file-name {
+    font-weight: 600;
+  }
+
+  .file-bubble .error-message {
+    margin: 0;
+  }
+</style>
+
 <body>
 
   <header>
     <h1>WAV to PDA Converter</h1>
+    <p>
+      This page allows you to convert WAV audio files to Playdate Audio (PDA)
+      files. It's
+      <a href="https://github.com/ejb/wav-pda-converter">open source</a> and
+      available as a command-line tool and JavaScript library.
+    </p>
   </header>
   <main>
-    <input type="file" accept="audio/wav">
-    <div class="output"></div>
+    <div class="file-input">
+      <label>
+        Select WAV files to convert:
+        <input type="file" accept="audio/wav" />
+      </label>
+    </div>
+    <ul class="file-list"></ul>
   </main>
 
   <script src="//bundle.run/buffer@6.0.3"></script>
@@ -25,6 +71,9 @@
   <script src="./dist/wav-to-pda.js"></script>
 
   <script>
+
+    let state = { files: [] };
+
     const input = document.querySelector('input[type="file"]');
     input.addEventListener('change', async (e) => {
       const filename = input.files[0].name;
@@ -33,26 +82,53 @@
       const fileByteArray = [];
       const buffer = new Uint8Array(arrayBuffer);
 
-      let pda;
       try {
-        pda = wavToPda.wavToPda(buffer);
-      } catch (error) {
-        alert(error.message)
-      }
-
-      if (pda) {
+        const pda = wavToPda.wavToPda(buffer);
         const output = {
           url: URL.createObjectURL(new Blob([pda])),
-          name: filename.replace('.wav', '.pda')
+          name: filename,
+          outputName: filename.replace('.wav', '.pda'),
+          timestamp: Date.now()
         }
-        document.querySelector('.output').innerHTML = `<a href="${output.url}" download="${output.name}">Download ${output.name}</a>`;
-      } else {
-        document.querySelector('.output').innerHTML = '';
+        state.files.push(output);
+      } catch (error) {
+        state.files.push({
+          name: filename,
+          errorMessage: error.message,
+          timestamp: Date.now()
+        })
       }
 
       input.value = null;
 
+      updateDOM(state);
+
     });
+
+
+    function updateDOM(state) {
+      state.files.sort((a, b) => b.timestamp - a.timestamp)
+      document.querySelector(".file-list").innerHTML = state.files
+        .map(fileBubble)
+        .join("");
+    }
+
+    function fileBubble(file) {
+      if (file.errorMessage) {
+        return `<li class="file-bubble error">
+            <div class="input-file-name">${file.name}</div>
+            <p class="error-message">
+                ${file.errorMessage}
+            </p>
+        </li>`;
+      }
+      return `<li class="file-bubble">
+            <div class="input-file-name">${file.name}</div>
+            <div class="output-file-name">
+                → <a href="${file.url}" download="${file.outputName}">${file.outputName}</a>
+            </div>
+        </li>`;
+    }
   </script>
 </body>
 
