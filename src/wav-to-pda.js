@@ -90,8 +90,6 @@ export function pdaDataToBinary(data) {
 export function wavToPda(wav) {
   const wavData = parseWav(wav);
 
-  console.log(wavData.audioFormat);
-
   if (wavData.audioFormat === "ADPCM") {
     throw new Error("ADPCM-encoded WAV files are not yet supported, sorry");
   }

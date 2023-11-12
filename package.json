@@ -5,13 +5,14 @@
   "main": "wav-to-pda.js",
   "scripts": {
     "dev": "rollup -c rollup.config.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava ./**.test.js"
   },
   "author": "pawprints aka @ejb",
   "license": "ISC",
   "dependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "ava": "^5.3.1",
     "restructure": "^3.0.0",
     "rollup": "^4.4.0",
     "wavefile": "^11.0.0"

@@ -9,6 +9,7 @@ export default {
     format: "umd",
     name: "wavToPda",
   },
+  watch: true,
   plugins: [
     commonjs({
       defaultIsModuleExports: true,
