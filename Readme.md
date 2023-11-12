@@ -2,6 +2,8 @@
 
 Converting WAV files to PDA (Playdate Audio) for use with the [Playdate games console](https://play.date/).
 
+Use it on the web here, no code required: https://ejb.github.io/wav-pda-converter/
+
 ## CLI usage
 
 ```sh
