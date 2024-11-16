@@ -21,7 +21,7 @@ test("PCM WAV to PDA", async (t) => {
   t.deepEqual(pda, t.context.pdaPCM);
 });
 
-test.failing("IMAADPCM WAV to PDA", async (t) => {
+test("IMAADPCM WAV to PDA", async (t) => {
   const pda = wavToPda(t.context.wavADPCM);
   t.is(pda.length, t.context.pdaADPCM.length);
   t.deepEqual(pda, t.context.pdaADPCM);
