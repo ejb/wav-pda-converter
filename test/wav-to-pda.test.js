@@ -1,6 +1,7 @@
 const test = require("ava");
 const { readFile, writeFile, mkdir, rm } = require("node:fs/promises");
-const { exec } = require("child_process");
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
 
 const wavToPdaPkg = require("../dist/wav-to-pda");
 const { setTimeout } = require("node:timers/promises");
@@ -8,23 +9,31 @@ const { wavToPda } = wavToPdaPkg;
 
 test.before(async (t) => {
   t.context = {
-    wavPCM: await readFile("./test/fixtures/SetPuzzleComplete-16bitPCM.wav"),
-    wavADPCM: await readFile("./test/fixtures/SetPuzzleComplete-IMAADPCM.wav"),
-    pdaPCM: await readFile("./test/expected/SetPuzzleComplete-16bitPCM.pda"),
-    pdaADPCM: await readFile("./test/expected/SetPuzzleComplete-IMAADPCM.pda"),
+    wav_PCM_stereo: await readFile(
+      "./test/fixtures/SetPuzzleComplete-Stereo-16bitPCM.wav"
+    ),
+    wav_ADPCM_stereo: await readFile(
+      "./test/fixtures/SetPuzzleComplete-Stereo-IMAADPCM.wav"
+    ),
+    pda_PCM_stereo: await readFile(
+      "./test/expected/SetPuzzleComplete-Stereo-16bitPCM.pda"
+    ),
+    pda_ADPCM_stereo: await readFile(
+      "./test/expected/SetPuzzleComplete-Stereo-IMAADPCM.pda"
+    ),
   };
 });
 
 test("PCM WAV to PDA", async (t) => {
-  const pda = wavToPda(t.context.wavPCM);
-  t.is(pda.length, t.context.pdaPCM.length);
-  t.deepEqual(pda, t.context.pdaPCM);
+  const pda = wavToPda(t.context.wav_PCM_stereo);
+  t.is(pda.length, t.context.pda_PCM_stereo.length);
+  t.deepEqual(pda, t.context.pda_PCM_stereo);
 });
 
 test.failing("IMAADPCM WAV to PDA", async (t) => {
-  const pda = wavToPda(t.context.wavADPCM);
-  t.is(pda.length, t.context.pdaADPCM.length);
-  t.deepEqual(pda, t.context.pdaADPCM);
+  const pda = wavToPda(t.context.wav_ADPCM_stereo);
+  t.is(pda.length, t.context.pda_ADPCM_stereo.length);
+  t.deepEqual(pda, t.context.pda_ADPCM_stereo);
 });
 
 test("command line usage", async (t) => {
@@ -34,12 +43,14 @@ test("command line usage", async (t) => {
   await mkdir("./test/tmp", { recursive: true });
   await exec(
     `node ./bin/index.js \
-    ./test/fixtures/SetPuzzleComplete-16bitPCM.wav \
-    ./test/tmp/SetPuzzleComplete-16bitPCM.pda
+    ./test/fixtures/SetPuzzleComplete-Stereo-16bitPCM.wav \
+    ./test/tmp/SetPuzzleComplete-Stereo-16bitPCM.pda
     `
   );
   await setTimeout(100);
-  const pda = await readFile("./test/tmp/SetPuzzleComplete-16bitPCM.pda");
-  t.is(pda.length, t.context.pdaPCM.length);
-  t.deepEqual(pda, t.context.pdaPCM);
+  const pda = await readFile(
+    "./test/tmp/SetPuzzleComplete-Stereo-16bitPCM.pda"
+  );
+  t.is(pda.length, t.context.pda_PCM_stereo.length);
+  t.deepEqual(pda, t.context.pda_PCM_stereo);
 });
