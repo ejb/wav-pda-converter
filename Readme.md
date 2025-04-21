@@ -6,8 +6,20 @@ Use it on the web here, no code required: https://ejb.github.io/wav-pda-converte
 
 ## CLI usage
 
+This assumes you have [NodeJS installed](https://nodejs.org/en).
+
 ```sh
+npm ci
 node bin/index.js input_file.wav output_file.pda
+```
+
+## Building from source
+
+To update `dist/wav-to-pda.js`:
+
+```sh
+npm ci
+npm run build
 ```
 
 ## Building the web app
@@ -23,3 +35,4 @@ npm run dev
 - [This guide to Playdate file formats](https://github.com/cranksters/playdate-reverse-engineering/blob/main/formats/pda.md)
 - [This YouTube video on working with WAV files](https://www.youtube.com/watch?v=udbA7u1zYfc)
 - [This guide to WAV file formats](http://soundfile.sapp.org/doc/WaveFormat/)
+- Dave from Panic
