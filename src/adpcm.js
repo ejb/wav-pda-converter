@@ -4,9 +4,9 @@
  * @param {number} blockSize - Size of each ADPCM block
  * @returns {ArrayBuffer} Processed output buffer
  */
-export function processADPCMMono(inputBuffer, blockSize) {
+export function processADPCM(inputBuffer, blockSize, stereo) {
   // Create data views for reading from input buffer
-  const inputView = new DataView(inputBuffer);
+  const inputView = new DataView(new Uint8Array(inputBuffer).buffer);
 
   // Create output buffer (size will depend on input length, this is an estimate)
   const outputBuffer = new ArrayBuffer(inputBuffer.byteLength + 100); // Extra space for headers, etc.
@@ -41,14 +41,18 @@ export function processADPCMMono(inputBuffer, blockSize) {
     outputView.setInt32(outputPos, stateInfo, true);
     outputPos += 4;
 
-    // Process mono data - swap nibbles for each byte
-    while (inputPos < blockEnd) {
-      const byte = inputView.getUint8(inputPos++);
+    if (stereo) {
+      // TODO
+    } else {
+      // Process mono data - swap nibbles for each byte
+      while (inputPos < blockEnd) {
+        const byte = inputView.getUint8(inputPos++);
 
-      // Swap high and low nibbles: (low << 4) | (high >> 4)
-      const swapped = ((byte & 0x0f) << 4) | ((byte & 0xf0) >> 4);
+        // Swap high and low nibbles: (low << 4) | (high >> 4)
+        const swapped = ((byte & 0x0f) << 4) | ((byte & 0xf0) >> 4);
 
-      outputView.setUint8(outputPos++, swapped);
+        outputView.setUint8(outputPos++, swapped);
+      }
     }
   }
 
