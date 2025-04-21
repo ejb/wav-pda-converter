@@ -6204,6 +6204,12 @@
   function wavToPda(wav) {
     const data = parseWav(wav);
 
+    if (data.pdaFormatEquivalent === "kFormatADPCMStereo") {
+      throw new Error(
+        "Stereo ADPCM-encoded WAV files are not yet supported, sorry. Please convert the WAV file to mono first."
+      );
+    }
+
     const header = pdaDataToBinary({
       fileType: "Playdate AUD",
       sampleRate: data.sampleRate,
