@@ -42,7 +42,7 @@ test("IMAADPCM WAV to PDA", async (t) => {
   t.deepEqual(pda, t.context.pda_ADPCM_mono);
 });
 
-test.failing("IMAADPCM WAV to PDA, stereo", async (t) => {
+test("IMAADPCM WAV to PDA, stereo", async (t) => {
   const pda = wavToPda(t.context.wav_ADPCM_stereo);
   t.is(pda.length, t.context.pda_ADPCM_stereo.length);
   t.deepEqual(pda, t.context.pda_ADPCM_stereo);

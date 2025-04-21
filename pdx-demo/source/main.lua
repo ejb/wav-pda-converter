@@ -3,7 +3,7 @@ import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
-local audio_file = "./Assets/SetPuzzleComplete-Mono-IMAADPCM"
+local audio_file = "./Assets/SetPuzzleComplete-Stereo-IMAADPCM"
 print('playing '..audio_file)
 local mySound, error = playdate.sound.sampleplayer.new(audio_file)
 mySound:play(0)
