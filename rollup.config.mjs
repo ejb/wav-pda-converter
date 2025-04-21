@@ -2,6 +2,8 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import serve from "rollup-plugin-serve";
 
+const watching = process.argv.includes("--watch");
+
 export default {
   input: "src/wav-to-pda.js",
   output: {
@@ -9,7 +11,6 @@ export default {
     format: "umd",
     name: "wavToPda",
   },
-  watch: true,
   plugins: [
     commonjs({
       defaultIsModuleExports: true,
@@ -17,6 +18,6 @@ export default {
     nodeResolve({
       browser: true,
     }),
-    serve(),
+    watching && serve(),
   ],
 };

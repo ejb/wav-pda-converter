@@ -12,11 +12,17 @@ test.before(async (t) => {
     wav_PCM_stereo: await readFile(
       "./test/fixtures/SetPuzzleComplete-Stereo-16bitPCM.wav"
     ),
+    wav_ADPCM_mono: await readFile(
+      "./test/fixtures/SetPuzzleComplete-Mono-IMAADPCM.wav"
+    ),
     wav_ADPCM_stereo: await readFile(
       "./test/fixtures/SetPuzzleComplete-Stereo-IMAADPCM.wav"
     ),
     pda_PCM_stereo: await readFile(
       "./test/expected/SetPuzzleComplete-Stereo-16bitPCM.pda"
+    ),
+    pda_ADPCM_mono: await readFile(
+      "./test/expected/SetPuzzleComplete-Mono-IMAADPCM.pda"
     ),
     pda_ADPCM_stereo: await readFile(
       "./test/expected/SetPuzzleComplete-Stereo-IMAADPCM.pda"
@@ -30,7 +36,13 @@ test("PCM WAV to PDA", async (t) => {
   t.deepEqual(pda, t.context.pda_PCM_stereo);
 });
 
-test.failing("IMAADPCM WAV to PDA", async (t) => {
+test("IMAADPCM WAV to PDA", async (t) => {
+  const pda = wavToPda(t.context.wav_ADPCM_mono);
+  t.is(pda.length, t.context.pda_ADPCM_mono.length);
+  t.deepEqual(pda, t.context.pda_ADPCM_mono);
+});
+
+test.failing("IMAADPCM WAV to PDA, stereo", async (t) => {
   const pda = wavToPda(t.context.wav_ADPCM_stereo);
   t.is(pda.length, t.context.pda_ADPCM_stereo.length);
   t.deepEqual(pda, t.context.pda_ADPCM_stereo);

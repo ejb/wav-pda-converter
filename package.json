@@ -4,7 +4,8 @@
   "description": "Converting between WAV and Playdate Audio files",
   "main": "wav-to-pda.js",
   "scripts": {
-    "dev": "rollup -c rollup.config.mjs",
+    "build": "rollup -c rollup.config.mjs",
+    "dev": "rollup -c --watch rollup.config.mjs",
     "test": "ava ./**.test.js",
     "build:pdx": "pdc ./pdx-demo/source && open pdx-demo/source.pdx"
   },

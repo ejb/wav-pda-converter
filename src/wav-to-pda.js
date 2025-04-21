@@ -2,6 +2,8 @@ import { WaveFile } from "wavefile";
 
 import * as r from "restructure";
 
+import { processADPCMMono } from "./adpcm-mono";
+
 const pdaAudioDataFormats = {
   0: "kFormat8bitMono",
   1: "kFormat8bitStereo",
@@ -64,6 +66,7 @@ export function parseWav(buffer) {
     sampleRate: wav.fmt.sampleRate,
     stereo,
     bitsPerSample,
+    blockAlign: wav.fmt.blockAlign,
     audioFormat,
     pdaFormatEquivalentCode,
     pdaFormatEquivalent,
@@ -90,9 +93,7 @@ export function pdaDataToBinary(data) {
 export function wavToPda(wav) {
   const wavData = parseWav(wav);
 
-  if (wavData.audioFormat === "ADPCM") {
-    throw new Error("ADPCM-encoded WAV files are not yet supported, sorry");
-  }
+  const isAdpcmFormat = wavData.pdaFormatEquivalent.includes("ADPCM");
 
   const newPdaData = pdaDataToBinary({
     fileType: "Playdate AUD",
@@ -100,7 +101,15 @@ export function wavToPda(wav) {
     audioDataFormat: wavData.pdaFormatEquivalentCode,
   });
 
-  const pdaDataBinary = Buffer.concat([newPdaData, wavData.data.samples]);
+  const pdaDataBinary = Buffer.concat([
+    newPdaData,
+    isAdpcmFormat
+      ? processADPCMMono(
+          new Uint8Array(wavData.data.samples).buffer,
+          wavData.blockAlign
+        )
+      : wavData.data.samples,
+  ]);
 
   return pdaDataBinary;
 }
